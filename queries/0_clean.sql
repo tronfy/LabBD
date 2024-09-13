@@ -12,7 +12,6 @@ drop table if exists turma;
 
 drop table if exists escola;
 
-# permissões
 revoke all on censo.* from 'grupo3';
 
 grant
