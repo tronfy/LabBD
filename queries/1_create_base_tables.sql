@@ -1,4 +1,4 @@
-use censo;
+use labbd;
 
 create table escola (
     NU_ANO_CENSO int,

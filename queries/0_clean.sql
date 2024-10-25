@@ -1,4 +1,4 @@
-use censo;
+use labbd;
 
 drop table if exists bookmark;
 
@@ -11,9 +11,3 @@ drop table if exists docente;
 drop table if exists turma;
 
 drop table if exists escola;
-
-revoke all on censo.* from 'grupo3';
-
-grant
-select, insert, update, delete
-on censo.* to 'grupo3';
