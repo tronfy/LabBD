@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 @REM copy files in mysql-files to C:\ProgramData\MySQL\MySQL Server 8.0\Uploads
-xcopy mysql-files\*.* C:\ProgramData\MySQL\MySQL Server 8.0\Uploads /Y
+Copy ".\mysql-files\*.csv" "C:\ProgramData\MySQL\MySQL Server 8.0\Uploads"
 
 @REM Run all queries
 for %%f in (queries\*.sql) do (
