@@ -24,12 +24,12 @@ def validar(email, senha):
 
 def login_usuario(email, senha):
     cursor = conn.cursor()
-    print(senha)
     cursor.execute(
-        "SELECT * FROM usuario WHERE email=%s AND senha=%s", (email, senha)
+        "SELECT * FROM usuario WHERE email=%s AND senha=SHA(%s)", (email, senha)
     )
     usuario = cursor.fetchone()
     if usuario:
+        print(usuario)
         return True
     else:
         return False
