@@ -14,4 +14,4 @@
 
 3. instalar deps: `pip install -r requirements.txt`
 
-4. rodar streamlit: `python -m streamlit run src/Home.py`
+4. rodar streamlit: `python -m streamlit run src/app.py`

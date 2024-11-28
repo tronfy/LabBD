@@ -79,7 +79,7 @@ cur.execute(f"SELECT NO_ENTIDADE as nome FROM escola e WHERE e.CO_ENTIDADE = {id
 escola = cur.fetchone()
 df = pd.DataFrame([escola], columns=cur.column_names)
 escola = df.to_dict(orient="records")[0]
-st.header(f"`{id_escola}` {escola['nome']}")
+st.header(f"{escola['nome']} `{id_escola}`")
 st.write(f"### `{len(df_turmas)}` turmas, `{len(df_docentes)}` docentes, `{len(df_alunos)}` alunos")
 
 st.write("## Turmas")
