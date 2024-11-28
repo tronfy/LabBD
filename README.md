@@ -1,11 +1,12 @@
 # LabBD
 
-na cloud vm:
+## na cloud vm:
+
 1. iniciar container: `docker compose up -d`, esperar uns segundos
 
 2. remover todas as tabelas e rodar todas as queries: `./run_all.sh`
 
-no local:
+## no ambiente local:
 
 1. criear venv: `python -m venv venv`
 
@@ -13,4 +14,4 @@ no local:
 
 3. instalar deps: `pip install -r requirements.txt`
 
-4. rodar streamlit: `python -m streamlit run src/app.py`
+4. rodar streamlit: `python -m streamlit run src/Home.py`
