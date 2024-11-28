@@ -18,13 +18,14 @@ def validar(nome, email, senha, dt_nasc):
     return True
 
 
-def cadastra_usuario(nome, email, senha, dt_nasc):
-    # inserir os dados de seu MySQL
+def cadastra_usuario(nome, email, senha, dt_nasc, gerencial=False):
     cursor = conn.cursor()
-    # ajustar conforme os campos da tabela Usuario de seu banco
-    inp = f"INSERT INTO usuario (nome, email, senha, data_nascimento) VALUES ('{nome}','{email}','{senha}','{dt_nasc}');"
     try:
-        cursor.execute(inp)
+        print(nome, email, senha, dt_nasc, gerencial)   
+        cursor.execute(
+            "INSERT INTO usuario (nome, email, senha, data_nascimento, gerencial) VALUES (%s, %s, %s, %s, %s)",
+            (nome, email, senha, dt_nasc, gerencial),
+        )
         st.success("Usuário cadastrado.")
     except Exception as e:
         conn.rollback()
@@ -39,6 +40,7 @@ with st.form("cadastro"):
     nome = st.text_input("Nome:")
     email = st.text_input("Email:")
     senha = st.text_input("Senha:", type="password")
+    gerencial = st.checkbox("Gerencial")
     dt_nasc = st.date_input(
         "Data de nascimento:",
         min_value=datetime.date(1924, 1, 1),
@@ -49,7 +51,7 @@ with st.form("cadastro"):
 
 if submit and validar(nome, email, senha, dt_nasc):
     # se o form for submetido e os dados estiverem válidos
-    cadastra_usuario(nome, email, senha, dt_nasc)
+    cadastra_usuario(nome, email, senha, dt_nasc, gerencial)
 elif submit:
     # se o form for submetido mas com dados inválidos
     st.warning("Dados inválidos")

@@ -32,6 +32,7 @@
 --     nome varchar(100) not null,
 --     email varchar(100) unique not null,
 --     data_cadastro datetime not null,
+--     gerencial boolean not null default false,
 --     primary key (id_usuario)
 -- );
 
@@ -54,11 +55,12 @@
 -- -- alter table usuario add senha varchar(40) default SHA('senha') not null;
 -- alter table usuario add senha varchar(40) not null;
 
--- create trigger set_default_password before
+-- create trigger hash_password before
 -- insert
 --     on usuario for each row
 -- set
---     new.senha = SHA ('senha');
+--     new.senha = SHA (new.senha);
+
 
 -- -- Adicione o campo data de nascimento na tabela Usuario;
 -- alter table usuario add data_nascimento date;

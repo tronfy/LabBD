@@ -28,8 +28,13 @@ def login_usuario(email, senha):
         "SELECT * FROM usuario WHERE email=%s AND senha=SHA(%s)", (email, senha)
     )
     usuario = cursor.fetchone()
+    
     if usuario:
-        print(usuario)
+        nome = usuario[1]
+        gerencial = usuario[4]
+        st.session_state["user_name"] = nome
+        st.session_state["user_role"] = "gerencial" if gerencial else "comum"
+        st.rerun()
         return True
     else:
         return False

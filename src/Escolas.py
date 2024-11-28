@@ -1,6 +1,6 @@
 import mysql.connector
 import streamlit as st
-# from st_aggrid import AgGrid, JsCode, GridOptionsBuilder
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, ColumnsAutoSizeMode
 import pandas as pd
 
 conn = mysql.connector.connect(
@@ -47,22 +47,45 @@ df = pd.DataFrame(rows, columns=cur.column_names)
 
 # add page link to details page, use st.page_link
 # df['nome'] = df['nome'].apply(lambda x: f"[{x}](http://localhost:8051/Detalhes_-_Escola/?id={x})")
-df['id'] = df['id'].apply(lambda x: f"/EscolaDetalhes/?id={x}")
+# df['id'] = df['id'].apply(lambda x: f"/EscolaDetalhes/?id={x}")
+
+gb = GridOptionsBuilder.from_dataframe(df)
+gb.configure_selection(selection_mode="single")
+gb.configure_side_bar()
+gridOptions = gb.build()
+
+st.header("Escolas")
+
+
+data = AgGrid(
+    df,
+    gridOptions=gridOptions,
+    enable_enterprise_modules=True,
+    allow_unsafe_jscode=True,
+    update_mode=GridUpdateMode.SELECTION_CHANGED,
+    columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS
+)
+
+selected = data["selected_rows"]
+
+if selected is not None and len(selected) > 0:
+  # id_escola = selected.values[0][0]
+  st.session_state["id_escola"] = selected.values[0][0]
+  st.switch_page("EscolaDetalhes.py")
 
 # gb = GridOptionsBuilder.from_dataframe(df)
 # gb.configure_column("detalhes", cellRenderer=JsCode("function(params) {return '<a href=' + params.value + '>link</a>'}"))
 # gridOptions = gb.build()
 
-st.header("Escolas")
-st.data_editor(
-    df,
-    column_config={
-        # "id": st.column_config.LinkColumn("id", display_text="/Detalhes_-_Escola/?id=(.*?)"),
-        "id": st.column_config.LinkColumn("detalhes", display_text="link"),
+# st.data_editor(
+#     df,
+#     column_config={
+#         # "id": st.column_config.LinkColumn("id", display_text="/Detalhes_-_Escola/?id=(.*?)"),
+#         "id": st.column_config.LinkColumn("detalhes", display_text="link"),
 
-    },
-    hide_index=True,
-)
+#     },
+#     hide_index=True,
+# )
 
 # st.write(df)
 # AgGrid(df, gridOptions=gridOptions, allow_unsafe_jscode=True)

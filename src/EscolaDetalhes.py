@@ -15,10 +15,11 @@ conn = mysql.connector.connect(
 cur = conn.cursor(buffered=True)
 
 try:
-  id_escola = st.query_params["id"]
+  id_escola = st.session_state["id_escola"]
 except KeyError:
   st.error("Selecione uma escola a partir da Lista de Escolas")
   st.stop()
+
 
 # turmas
 cur.execute(f"""
