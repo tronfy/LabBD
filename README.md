@@ -1,11 +1,16 @@
 # LabBD
 
-1. remover todas as tabelas e rodar todas as queries: `./run_all.bat`
+na cloud vm:
+1. iniciar container: `docker compose up -d`, esperar uns segundos
 
-2. criear venv: `python -m venv venv`
+2. remover todas as tabelas e rodar todas as queries: `./run_all.sh`
 
-3. ativar venv: `.\venv\Scripts\activate.bat`
+no local:
 
-4. instalar deps: `pip install --user -r .\requirements.txt`
+1. criear venv: `python -m venv venv`
 
-5. rodar streamlit: `python -m streamlit run .\src\app.py`
+2. ativar venv: `source ./venv/bin/activate`
+
+3. instalar deps: `pip install -r requirements.txt`
+
+4. rodar streamlit: `python -m streamlit run src/app.py`

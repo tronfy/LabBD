@@ -6,7 +6,7 @@ from sql import conn
 
 cur = conn.cursor()
 
-cur.execute("select * from Escola;")
+cur.execute("select * from escola;")
 rows = cur.fetchall()
 
 rows = pd.DataFrame(rows, columns=cur.column_names)
