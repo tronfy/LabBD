@@ -3,7 +3,7 @@ services:
         image: mysql:8
         environment:
             MYSQL_ROOT_PASSWORD: c6h5bwInqtKJKmiuPcBQ0A
-            MYSQL_DATABASE: censo
+            MYSQL_DATABASE: labbd
             MYSQL_USER: grupo3
             MYSQL_PASSWORD: grupo3
         command: [ '--local-infile=1', '--secure-file-priv=/var/lib/mysql-files/' ]
