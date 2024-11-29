@@ -20,20 +20,23 @@ def validar(nome, email, senha, dt_nasc):
 
 def cadastra_usuario(nome, email, senha, dt_nasc, gerencial=False):
     cursor = conn.cursor()
+    success = False
     try:
-        print(nome, email, senha, dt_nasc, gerencial)   
         cursor.execute(
             "INSERT INTO usuario (nome, email, senha, data_nascimento, gerencial) VALUES (%s, %s, %s, %s, %s)",
             (nome, email, senha, dt_nasc, gerencial),
         )
-        st.success("Usuário cadastrado.")
-        st.switch_page("Login.py")
+        success = True
     except Exception as e:
         conn.rollback()
         st.error(f"Erro ao cadastrar o usuário {e}")
     finally:
         cursor.close()
     conn.commit()
+
+    if success:
+        st.success("Usuário cadastrado.")
+        st.switch_page("Login.py")
 
 
 with st.form("cadastro"):

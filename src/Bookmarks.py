@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, ColumnsAutoSizeMode
-
 import mysql.connector
 
 st.header("Bookmarks")

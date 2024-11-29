@@ -14,7 +14,8 @@ else:
   pages.append(st.Page("EscolaDetalhes.py", title="Detalhes de Escola", icon="📝"))
 
   if st.session_state['user_role'] == "gerencial":
-    pages.append(st.Page("Bookmarks.py", title="Bookmarks", icon="🔖"))
+    pages.append(st.Page("Bookmarks.py", title="Minhas Bookmarks", icon="🔖"))
+    pages.append(st.Page("Usuarios.py", title="Lista de Usuários", icon="👥"))
 
   pages.append(st.Page("Logout.py", title="Logout", icon="↪️"))
 
