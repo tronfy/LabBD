@@ -67,13 +67,18 @@ df_docentes = pd.DataFrame(docentes, columns=cur.column_names)
 
 
 ## alunos
-cur.execute("""
-select m.CO_PESSOA_FISICA as id from escola e
-  inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
-  where e.CO_ENTIDADE = %s
-""", (id_escola,))
-alunos = cur.fetchall()
-df_alunos = pd.DataFrame(alunos, columns=cur.column_names)
+def get_alunos():
+  cursor = conn.cursor()
+  cursor.execute("""
+  select m.CO_PESSOA_FISICA as id from escola e
+    inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
+    where e.CO_ENTIDADE = %s
+  """, (id_escola,))
+  alunos = cursor.fetchall()
+  ret = pd.DataFrame(alunos, columns=cursor.column_names)
+  cursor.close()
+  return ret
+df_alunos = get_alunos()
 
 # exibir nome e dados
 cur.execute(f"SELECT NO_ENTIDADE as nome FROM escola e WHERE e.CO_ENTIDADE = {id_escola}")
@@ -166,7 +171,7 @@ if docente_selected is not None and len(docente_selected) > 0:
     """)
     docente = cur.fetchone()
     df_docente = pd.DataFrame([docente], columns=cur.column_names)
-    AgGrid(df_docente)
+    st.write(df_docente)
 
 
 st.write("## Alunos")
@@ -187,19 +192,6 @@ aluno_data = AgGrid(
     columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS
 )
 
-### alunos por nível de ensino
-cur.execute("""
-  select c.nivel as nivel_ensino, count(m.CO_PESSOA_FISICA) as num_alunos from escola e
-    inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
-    inner join cat_nivel_ensino c on c.id = m.TP_ETAPA_ENSINO
-    where e.CO_ENTIDADE = %s
-    group by c.nivel
-""", (id_escola,))
-alunos_nivel_ensino = cur.fetchall()
-df_alunos_nivel_ensino = pd.DataFrame(alunos_nivel_ensino, columns=cur.column_names)
-st.write(f"### Alunos por nível de ensino")
-AgGrid(df_alunos_nivel_ensino)
-
 aluno_selected = aluno_data["selected_rows"]
 
 if aluno_selected is not None and len(aluno_selected) > 0:
@@ -219,8 +211,25 @@ if aluno_selected is not None and len(aluno_selected) > 0:
     """)
     aluno = cur.fetchone()
     df_aluno = pd.DataFrame([aluno], columns=cur.column_names)
-    AgGrid(df_aluno)
+    st.write(df_aluno)
 
+### alunos por nível de ensino
+@st.cache_data
+def alunos_por_nivel_ensino():
+  cursor = conn.cursor()
+  cursor.execute("""
+    select c.nivel as nivel_ensino, count(m.CO_PESSOA_FISICA) as num_alunos from escola e
+      inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
+      inner join cat_nivel_ensino c on c.id = m.TP_ETAPA_ENSINO
+      where e.CO_ENTIDADE = %s
+      group by c.nivel
+  """, (id_escola,))
+  alunos_nivel_ensino = cursor.fetchall()
+  ret = pd.DataFrame(alunos_nivel_ensino, columns=cursor.column_names)
+  cursor.close()
+  return ret
+st.write(f"### Alunos por nível de ensino")
+st.write(alunos_por_nivel_ensino())
 
 # mapa
 cur.execute(f"""
