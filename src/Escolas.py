@@ -29,7 +29,8 @@ select
   case when e.IN_EJA = 1 then '✅' else '❌' end as nivel_EJA,
   case when e.IN_PROFISSIONALIZANTE = 1 then '✅' else '❌' end as nivel_EP,
   case when e.IN_ESPECIAL_EXCLUSIVA = 1 then '✅' else '❌' end as nivel_EE,
-  n_matriculas, n_docentes, n_turmas
+  n_matriculas, n_docentes, n_turmas,
+  g.LAT as latitude, g.LON as longitude
 from escola e
   inner join cat_situacao on e.TP_SITUACAO_FUNCIONAMENTO = cat_situacao.id
   inner join cat_municipio on e.CO_MUNICIPIO = cat_municipio.id
@@ -38,6 +39,7 @@ from escola e
   inner join escola_matriculas em on e.CO_ENTIDADE = em.CO_ENTIDADE
   inner join escola_docentes ed on e.CO_ENTIDADE = ed.CO_ENTIDADE
   inner join escola_turmas et on e.CO_ENTIDADE = et.CO_ENTIDADE
+  inner join geolocalizacao g on e.CO_ENTIDADE = g.CO_ENTIDADE
 order by n_matriculas desc
 ;""")
 rows = cur.fetchall()
@@ -75,3 +77,5 @@ selected = data["selected_rows"]
 if selected is not None and len(selected) > 0:
   st.session_state["id_escola"] = selected.values[0][0]
   st.switch_page("EscolaDetalhes.py")
+
+st.map(df)

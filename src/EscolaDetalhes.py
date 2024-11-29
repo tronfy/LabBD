@@ -68,12 +68,17 @@ df_docentes = pd.DataFrame(docentes, columns=cur.column_names)
 
 ## alunos
 cur.execute("""
-select m.CO_PESSOA_FISICA from escola e
+select m.CO_PESSOA_FISICA as id from escola e
   inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
   where e.CO_ENTIDADE = %s
 """, (id_escola,))
 alunos = cur.fetchall()
 df_alunos = pd.DataFrame(alunos, columns=cur.column_names)
+
+# exibir nome e dados
+cur.execute(f"SELECT NO_ENTIDADE as nome FROM escola e WHERE e.CO_ENTIDADE = {id_escola}")
+escola = cur.fetchone()
+df = pd.DataFrame([escola], columns=cur.column_names)
 
 # exibir nome e dados
 cur.execute(f"SELECT NO_ENTIDADE as nome FROM escola e WHERE e.CO_ENTIDADE = {id_escola}")
@@ -182,6 +187,19 @@ aluno_data = AgGrid(
     columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS
 )
 
+### alunos por nível de ensino
+cur.execute("""
+  select c.nivel as nivel_ensino, count(m.CO_PESSOA_FISICA) as num_alunos from escola e
+    inner join matricula m on m.CO_ENTIDADE = e.CO_ENTIDADE
+    inner join cat_nivel_ensino c on c.id = m.TP_ETAPA_ENSINO
+    where e.CO_ENTIDADE = %s
+    group by c.nivel
+""", (id_escola,))
+alunos_nivel_ensino = cur.fetchall()
+df_alunos_nivel_ensino = pd.DataFrame(alunos_nivel_ensino, columns=cur.column_names)
+st.write(f"### Alunos por nível de ensino")
+AgGrid(df_alunos_nivel_ensino)
+
 aluno_selected = aluno_data["selected_rows"]
 
 if aluno_selected is not None and len(aluno_selected) > 0:
@@ -202,3 +220,15 @@ if aluno_selected is not None and len(aluno_selected) > 0:
     aluno = cur.fetchone()
     df_aluno = pd.DataFrame([aluno], columns=cur.column_names)
     AgGrid(df_aluno)
+
+
+# mapa
+cur.execute(f"""
+select e.NO_ENTIDADE as nome, g.LAT, g.LON from escola e
+  inner join geolocalizacao g on g.CO_ENTIDADE = e.CO_ENTIDADE
+  where e.CO_ENTIDADE = {id_escola}
+""")
+escola = cur.fetchone()
+df = pd.DataFrame([escola], columns=cur.column_names)
+st.write("## Localização")
+st.map(df)
