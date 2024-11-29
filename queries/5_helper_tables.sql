@@ -45,7 +45,7 @@ insert into cat_municipio (id, nome) values
 drop view if exists escola_matriculas;
 create view escola_matriculas as
   select e.CO_ENTIDADE, count(m.ID_MATRICULA) as n_matriculas from escola e
-  left join matricula m on e.CO_ENTIDADE = m.CO_ENTIDADE group by m.CO_ENTIDADE;
+  left join matricula m on e.CO_ENTIDADE = m.CO_ENTIDADE group by e.CO_ENTIDADE;
 
 drop view if exists escola_turmas;
 create view escola_turmas as
