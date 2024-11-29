@@ -83,10 +83,51 @@ escola = df.to_dict(orient="records")[0]
 st.header(f"{escola['nome']} `{id_escola}`")
 st.write(f"### `{len(df_turmas)}` turmas, `{len(df_docentes)}` docentes, `{len(df_alunos)}` alunos")
 
+def is_bookmarked(id_escola):
+  cur.execute("SELECT * FROM bookmark WHERE id_entidade = %s and id_usuario = %s", (id_escola, st.session_state['user_id']))
+  return cur.fetchone() is not None
+
+def add_bookmark(id_escola):  
+  cursor = conn.cursor()
+  try:
+    cur.execute("INSERT INTO bookmark (id_entidade, id_usuario) VALUES (%s, %s)", (id_escola, st.session_state['user_id']))
+    print("add bookmark", id_escola, st.session_state['user_id'])
+  except Exception as e:
+    print(e)
+    conn.rollback()
+    st.error(f"Erro ao adicionar bookmark")
+  finally:
+    cursor.close()
+  conn.commit()
+
+def remove_bookmark(id_escola):
+  cursor = conn.cursor()
+  try:
+    cur.execute("DELETE FROM bookmark WHERE id_entidade = %s and id_usuario = %s", (id_escola, st.session_state['user_id']))
+    print("remove bookmark", id_escola, st.session_state['user_id'])
+  except Exception as e:
+    print(e)
+    conn.rollback()
+    st.error(f"Erro ao remover bookmark")
+  finally:
+    cursor.close()
+  conn.commit()
+
+if "user_role" in st.session_state and st.session_state["user_role"] == "gerencial":
+  if not is_bookmarked(id_escola):
+    st.button("Adicionar Bookmark", key="bookmark", on_click=lambda: add_bookmark(id_escola))
+  else:
+    st.button("Remover Bookmark", key="unbookmark", on_click=lambda: remove_bookmark(id_escola))
+
 st.write("## Turmas")
-st.write(df_turmas)
+if "user_role" in st.session_state and st.session_state["user_role"] == "gerencial":
+  st.download_button("Baixar turmas.csv", df_turmas.to_csv(), "turmas.csv", "text/csv")
+AgGrid(df_turmas)
 
 st.write("## Docentes")
+st.write("Selecione um docente para ver detalhes")
+if "user_role" in st.session_state and st.session_state["user_role"] == "gerencial":
+  st.download_button("Baixar docentes.csv", df_docentes.to_csv(), "docentes.csv", "text/csv")
 docente_gb = GridOptionsBuilder.from_dataframe(df_docentes)
 docente_gb.configure_selection(selection_mode="single")
 docente_gb.configure_side_bar()
@@ -120,10 +161,13 @@ if docente_selected is not None and len(docente_selected) > 0:
     """)
     docente = cur.fetchone()
     df_docente = pd.DataFrame([docente], columns=cur.column_names)
-    st.write(df_docente)
+    AgGrid(df_docente)
+
 
 st.write("## Alunos")
-
+st.write("Selecione um aluno para ver detalhes")
+if "user_role" in st.session_state and st.session_state["user_role"] == "gerencial":
+  st.download_button("Baixar alunos.csv", df_alunos.to_csv(), "alunos.csv", "text/csv")
 aluno_gb = GridOptionsBuilder.from_dataframe(df_alunos)
 aluno_gb.configure_selection(selection_mode="single")
 aluno_gb.configure_side_bar()
@@ -157,6 +201,4 @@ if aluno_selected is not None and len(aluno_selected) > 0:
     """)
     aluno = cur.fetchone()
     df_aluno = pd.DataFrame([aluno], columns=cur.column_names)
-    st.write(df_aluno)
-
-conn.close()
+    AgGrid(df_aluno)

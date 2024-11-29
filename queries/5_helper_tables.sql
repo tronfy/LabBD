@@ -2,7 +2,7 @@
 drop table if exists cat_situacao;
 create table cat_situacao (
   id int primary key,
-  descricao varchar(50)
+  descricao varchar(30)
 );
 insert into cat_situacao (id, descricao) values
 (1, 'Em Atividade'),
@@ -14,7 +14,7 @@ insert into cat_situacao (id, descricao) values
 drop table if exists cat_localizacao;
 create table cat_localizacao (
   id int primary key,
-  descricao varchar(50)
+  descricao varchar(10)
 );
 insert into cat_localizacao (id, descricao) values
 (1, 'Urbana'),
@@ -24,7 +24,7 @@ insert into cat_localizacao (id, descricao) values
 drop table if exists cat_dependencia;
 create table cat_dependencia (
   id int primary key,
-  descricao varchar(50)
+  descricao varchar(10)
 );
 insert into cat_dependencia (id, descricao) values
 (1, 'Federal'),
@@ -36,7 +36,7 @@ insert into cat_dependencia (id, descricao) values
 drop table if exists cat_municipio;
 create table cat_municipio (
   id int primary key,
-  nome varchar(50)
+  nome varchar(20)
 );
 insert into cat_municipio (id, nome) values
 (3543907, 'Rio Claro');
@@ -56,4 +56,3 @@ drop view if exists escola_docentes;
 create view escola_docentes as
   select e.CO_ENTIDADE, count(distinct d.CO_PESSOA_FISICA) as n_docentes from escola e
   left join docente d on d.CO_ENTIDADE = e.CO_ENTIDADE group by e.CO_ENTIDADE;
-

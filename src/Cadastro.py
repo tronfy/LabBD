@@ -27,6 +27,7 @@ def cadastra_usuario(nome, email, senha, dt_nasc, gerencial=False):
             (nome, email, senha, dt_nasc, gerencial),
         )
         st.success("Usuário cadastrado.")
+        st.switch_page("Login.py")
     except Exception as e:
         conn.rollback()
         st.error(f"Erro ao cadastrar o usuário {e}")

@@ -55,7 +55,11 @@ gb.configure_side_bar()
 gridOptions = gb.build()
 
 st.header("Escolas")
+st.write("Selecione uma escola para ver detalhes")
 
+
+if "user_role" in st.session_state and st.session_state["user_role"] == "gerencial":
+  st.download_button("Baixar escolas.csv", df.to_csv(), "escolas.csv", "text/csv")
 
 data = AgGrid(
     df,
@@ -69,23 +73,5 @@ data = AgGrid(
 selected = data["selected_rows"]
 
 if selected is not None and len(selected) > 0:
-  # id_escola = selected.values[0][0]
   st.session_state["id_escola"] = selected.values[0][0]
   st.switch_page("EscolaDetalhes.py")
-
-# gb = GridOptionsBuilder.from_dataframe(df)
-# gb.configure_column("detalhes", cellRenderer=JsCode("function(params) {return '<a href=' + params.value + '>link</a>'}"))
-# gridOptions = gb.build()
-
-# st.data_editor(
-#     df,
-#     column_config={
-#         # "id": st.column_config.LinkColumn("id", display_text="/Detalhes_-_Escola/?id=(.*?)"),
-#         "id": st.column_config.LinkColumn("detalhes", display_text="link"),
-
-#     },
-#     hide_index=True,
-# )
-
-# st.write(df)
-# AgGrid(df, gridOptions=gridOptions, allow_unsafe_jscode=True)

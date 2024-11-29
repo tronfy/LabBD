@@ -1,6 +1,5 @@
 import streamlit as st
 import mysql.connector
-import datetime
 
 conn = mysql.connector.connect(
     host=st.secrets.DB_HOST,
@@ -32,6 +31,8 @@ def login_usuario(email, senha):
     if usuario:
         nome = usuario[1]
         gerencial = usuario[4]
+        id = usuario[0]
+        st.session_state["user_id"] = id
         st.session_state["user_name"] = nome
         st.session_state["user_role"] = "gerencial" if gerencial else "comum"
         st.rerun()
